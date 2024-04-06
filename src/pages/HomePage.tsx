@@ -15,6 +15,10 @@ const HomePage = () => {
           4. Extensin can install for better dev experience: Tailwind CSS
           IntelliSense, Prettier, ES7+ React/Redux/React-Native snippets
         </li>
+        <li>
+          Need readymade tailwind components? copy paste code from:
+          https://flowbite.com/docs/components/card/
+        </li>
       </ul>
     </div>
   );
