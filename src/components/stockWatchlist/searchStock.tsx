@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { debounce } from 'lodash';
+import { useDebounce } from '@uidotdev/usehooks';
+import React, { useEffect, useState } from 'react';
 
 interface Stock {
     search_id: string;
@@ -17,31 +17,37 @@ interface Stock {
 const SearchBox: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [searchResults, setSearchResults] = useState<Stock[]>([]);
+    const debouncedSearchTerm = useDebounce(searchTerm, 5000);
 
-    const fetchSearchResults = debounce(async (term: string) => {
-        try {
-            const response = await fetch(`https://growww.in/v1/api/search/v3/query/global/st_p_query?page=0&query=${term}&size=10&web=true`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
+    useEffect(()=>{
+        const fetchSearchResults = async (term: string) => {
+            try {
+                const response = await fetch(`https://growww.in/v1/api/search/v3/query/global/st_p_query?page=0&query=${term}&size=10&web=true`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Failed to fetch search results');
                 }
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch search results');
+    
+                const data = await response.json();
+                const results: Stock[] = data?.content || [];
+                setSearchResults(results);
+            } catch (error) {
+                console.error(error);
             }
+        };
 
-            const data = await response.json();
-            const results: Stock[] = data?.content || [];
-            setSearchResults(results);
-        } catch (error) {
-            console.error(error);
-        }
-    }, 300); // Debounce delay of 300 milliseconds
+        fetchSearchResults(debouncedSearchTerm)
+    },[debouncedSearchTerm])
+
+ 
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
-        fetchSearchResults(e.target.value);
     };
 
     return (
