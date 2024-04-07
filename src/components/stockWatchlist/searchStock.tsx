@@ -17,12 +17,12 @@ interface Stock {
 const SearchBox: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [searchResults, setSearchResults] = useState<Stock[]>([]);
-    const debouncedSearchTerm = useDebounce(searchTerm, 5000);
+    const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
     useEffect(()=>{
         const fetchSearchResults = async (term: string) => {
             try {
-                const response = await fetch(`https://growww.in/v1/api/search/v3/query/global/st_p_query?page=0&query=${term}&size=10&web=true`, {
+                const response = await fetch(`https://groww.in/v1/api/search/v3/query/global/st_p_query?page=0&query=${term}&size=10&web=true`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -41,7 +41,9 @@ const SearchBox: React.FC = () => {
             }
         };
 
-        fetchSearchResults(debouncedSearchTerm)
+        if(debouncedSearchTerm){
+            fetchSearchResults(debouncedSearchTerm)
+        }
     },[debouncedSearchTerm])
 
  

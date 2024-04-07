@@ -1,15 +1,23 @@
 import PCR from "../components/PCR";
 import InstitutionalInvestorsData from "../components/institutionalInvestors/InstitutionalInvestorsData";
 import StockWatchList from "../components/stockWatchlist/main";
+import { useGetPCR } from "../lib/hooks/stocksHooks";
+
+const bankNiftyRefetchInterval= 60*1000 // 60 seconds
 
 const HomePage = () => {
+  const bankNiftyFutureData= useGetPCR("nifty-bank", bankNiftyRefetchInterval);
+  const niftyFutureData= useGetPCR("nifty");
+  const bankNiftyPCR= bankNiftyFutureData.data?.pcr!;
+  const niftyPCR= niftyFutureData.data?.pcr!;
+
   return (
     <> <StockWatchList/>
     <hr />    
     <div className="p-8">
       <div className="flex gap-6 flex-wrap justify-center items-center rounded-lg border border-gray-100 bg-white shadow p-6">
-        <PCR pcr={0.8} market="Nifty" />
-        <PCR pcr={1.3} market="Bank Nifty" />
+       { niftyFutureData.isLoading ? "Loading Bank Nifty" : <PCR pcr={niftyPCR} market="Nifty" />}
+       { bankNiftyFutureData.isLoading ? "Loading Bank Nifty" : <PCR pcr={bankNiftyPCR} market="Bank Nifty" />}
       </div>
       <div className="rounded-lg border border-gray-100 bg-white shadow p-6 mt-6 font-medium text-lg">
         <h3 className="text-xl">FII/FPI & DII trading activity</h3>
