@@ -1,8 +1,11 @@
 import PCR from "../components/PCR";
 import InstitutionalInvestorsData from "../components/institutionalInvestors/InstitutionalInvestorsData";
+import StockWatchList from "../components/stockWatchlist/main";
 
 const HomePage = () => {
   return (
+    <> <StockWatchList/>
+    <hr />    
     <div className="p-8">
       <div className="flex gap-6 flex-wrap justify-center items-center rounded-lg border border-gray-100 bg-white shadow p-6">
         <PCR pcr={0.8} market="Nifty" />
@@ -50,6 +53,7 @@ const HomePage = () => {
         </li>
       </ul>
     </div>
+    </>
   );
 };
 
